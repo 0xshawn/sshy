@@ -1,0 +1,97 @@
+#!/usr/bin/env ruby
+
+require 'terminal-table'
+
+require 'bundler/setup'
+Bundler.setup
+require_relative '../lib/sshy'
+
+# puts Sshy::VERSION
+HIDE_CURSOR = "/usr/bin/tput civis"
+SHOW_CURSOR = "/usr/bin/tput cnorm"
+def winsize
+  require 'io/console'
+  IO.console.winsize
+rescue LoadError
+  [Integer(`tput li`), Integer(`tput co`)]
+end
+
+def get_table
+  hosts = []
+  f = File.open("#{Dir.home}/.ssh/config", "r")
+  f.each_line do |line|
+    if /^Host\s/.match(line)
+      hosts << line.split(' ').last
+    end
+  end
+  f.close
+
+  hosts.sort!
+  #hosts.each { |i| i.delete!("\n") }
+
+  length = hosts.length
+  i = 0
+  rows = []
+  while i < length do
+    if (i + 1) < length
+      data1 = "\033[32m " + hosts[i+1]
+    else
+      data1 = ""
+    end
+    if (i + 2) < length
+      data2 = hosts[i+2]
+    else
+      data2 = ""
+    end
+    rows << [hosts[i], data1, data2]
+    i += 3
+  end
+
+  # puts 'your choice: '
+  # choice = gets.chomp
+  # puts choice
+
+  table = Terminal::Table.new :rows => rows
+  table.style = {:width => 100, :border_x => " ", :border_i => " ", :border_y => " "}
+  return table, rows.length
+end
+
+
+
+# begin
+#   system("stty raw -echo")
+#   str = STDIN.getc
+# ensure
+#   system("stty -raw echo")
+# end
+# p str.chr
+# exit
+
+
+system(HIDE_CURSOR)
+
+begin
+  while true do
+    table, rows = get_table
+    puts table
+    # read input char
+    begin
+      system("stty raw -echo")
+      str = STDIN.getc
+      if str.chr == "\u0003" or str.chr == 'q' or str.chr == "\e[A" or str.chr == "w"
+        exit
+      end
+    ensure
+      system("stty -raw echo")
+    end
+
+    (rows + 2).times do
+      system('/usr/bin/tput cuu1')
+      system('/usr/bin/tput el')
+    end
+  end
+rescue Interrupt
+  exit
+ensure
+  system(SHOW_CURSOR)
+end
