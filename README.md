@@ -1,6 +1,6 @@
-# Sshy
+# SSHY
 
-Sshy help you connect to your ssh server without remember every name of it. — Edit
+Sshy help you connect to your ssh server without remember every name of it.
 
 ## Installation
 
@@ -20,7 +20,11 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+# sshy
+server01    server02    server03    server04
+server05
+...[Press Space for More]
+
 
 ## Contributing
 
