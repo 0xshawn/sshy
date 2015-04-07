@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["hightian@gmail.com"]
   spec.summary       = %q{SSH Tool}
   spec.description   = %q{Sshy help you connect to your ssh server without remember every name of it.}
-  spec.homepage      = "https://github.com/sshy"
+  spec.homepage      = "https://github.com/wenxer/sshy"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
