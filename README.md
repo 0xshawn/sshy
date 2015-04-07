@@ -20,10 +20,12 @@ Or install it yourself as:
 
 ## Usage
 
-# sshy
+```
+$ sshy
 server01    server02    server03    server04
 server05
 ...[Press Space for More]
+```
 
 
 ## Contributing
