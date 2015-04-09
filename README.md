@@ -2,7 +2,13 @@
 
 _version 0.0.4_
 
-Sshy help you connect to your ssh server without remember every name of it.
+Sshy help you connect to your ssh server without remember every name of it. It only works on Mac OS X.
+
+## Prepare
+1. Install iTerm2
+2. Change URL Schemes.
+
+  	Open iTerm2's Preference and click <b>_Profile_</b> tab and then click <b>_General_</b> subtab. Click <b>_Select URL Schemes_</b> and select ssh.
 
 ## Installation
 
