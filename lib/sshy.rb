@@ -1,5 +1,11 @@
-require "sshy/version"
+# require all files
+$:.unshift File.dirname(__FILE__)
+%w(version).each do |file|
+  require "sshy/#{file}"
+end
 
 module Sshy
-  # Your code goes here...
+  require 'sshy/data'
+  autoload :VERSION, 'sshy/version'
+  #autoload :Data, 'sshy/data'
 end

@@ -1,22 +1,27 @@
 #!/usr/bin/env ruby
-
 require 'terminal-table'
+require 'io/console'
 
 require 'bundler/setup'
 Bundler.setup
 require_relative '../lib/sshy'
 
+
 # puts Sshy::VERSION
 HIDE_CURSOR = "/usr/bin/tput civis"
 SHOW_CURSOR = "/usr/bin/tput cnorm"
+
+_table_size = [3, 3]
+_x_y = [0, 0]
+
+# TODO: check windows size >= ?
 def winsize
-  require 'io/console'
   IO.console.winsize
 rescue LoadError
   [Integer(`tput li`), Integer(`tput co`)]
 end
 
-def get_table
+def get_hosts
   hosts = []
   f = File.open("#{Dir.home}/.ssh/config", "r")
   f.each_line do |line|
@@ -27,65 +32,77 @@ def get_table
   f.close
 
   hosts.sort!
-  #hosts.each { |i| i.delete!("\n") }
+end
 
-  length = hosts.length
-  i = 0
-  rows = []
-  while i < length do
-    if (i + 1) < length
-      data1 = "\033[32m " + hosts[i+1]
-    else
-      data1 = ""
-    end
-    if (i + 2) < length
-      data2 = hosts[i+2]
-    else
-      data2 = ""
-    end
-    rows << [hosts[i], data1, data2]
-    i += 3
-  end
-
-  # puts 'your choice: '
-  # choice = gets.chomp
-  # puts choice
-
+def formattd_output(rows)
   table = Terminal::Table.new :rows => rows
   table.style = {:width => 100, :border_x => " ", :border_i => " ", :border_y => " "}
-  return table, rows.length
+  return table
+end
+
+def read_char
+  STDIN.echo = false
+  STDIN.raw!
+
+  input = STDIN.getc.chr
+  if input == "\e" then
+    input << STDIN.read_nonblock(3) rescue nil
+    input << STDIN.read_nonblock(2) rescue nil
+  end
+ensure
+  STDIN.echo = true
+  STDIN.cooked!
+
+  return input
 end
 
 
-
-# begin
-#   system("stty raw -echo")
-#   str = STDIN.getc
-# ensure
-#   system("stty -raw echo")
-# end
-# p str.chr
-# exit
-
-
-system(HIDE_CURSOR)
+system(HIDE_CURSOR) # hide cursor
 
 begin
+  hosts = get_hosts
+  data = Sshy::Data.new hosts
+
+  arrow_key = ''
   while true do
-    table, rows = get_table
+    data.move(arrow_key)
+    table = formattd_output(data.output)
+
+    # refresh new output
     puts table
-    # read input char
-    begin
-      system("stty raw -echo")
-      str = STDIN.getc
-      if str.chr == "\u0003" or str.chr == 'q' or str.chr == "\e[A" or str.chr == "w"
-        exit
+
+    # read input
+    char = read_char
+    if char == 'q' or char == "\u0003" # Ctrl-C
+      exit
+    end
+    case char
+    when "\r"
+      # open ssh
+      location = data.location
+      pid = Process.fork
+      if pid.nil? then
+        command = "open ssh://#{data.data[location[1]][location[0]]}"
+        puts "`#{command}`" + ' now'
+        exec command
+      else
+        Process.detach(pid)
+        puts "exit"
       end
-    ensure
-      system("stty -raw echo")
+      #Process.wait pid
+      exit
+    when "\e[A", "\u0010", 'k' # UP, CTRL-P, k
+      arrow_key = 'up'
+    when "\e[B", "\u000E", 'j' # DOWN, CTRL-N, j
+      arrow_key = 'down'
+    when "\e[C", "\u0006", 'l' # RIGHT, CTRL-F, l
+      arrow_key = 'right'
+    when "\e[D", "\u0002", 'h' # LEFT, CTRL-B, h
+      arrow_key = 'left'
     end
 
-    (rows + 2).times do
+    # clear old output
+    (data.length + 2).times do
       system('/usr/bin/tput cuu1')
       system('/usr/bin/tput el')
     end
@@ -93,5 +110,5 @@ begin
 rescue Interrupt
   exit
 ensure
-  system(SHOW_CURSOR)
+  system(SHOW_CURSOR) # show cursor
 end

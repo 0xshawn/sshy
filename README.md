@@ -1,5 +1,7 @@
 # SSHY
 
+_version 0.0.2_
+
 Sshy help you connect to your ssh server without remember every name of it.
 
 ## Installation
@@ -24,9 +26,8 @@ Or install it yourself as:
 $ sshy
 server01    server02    server03    server04
 server05
-...[Press Space for More]
 ```
-
+And now you could select one and press `Enter` to ssh it
 
 ## Contributing
 
