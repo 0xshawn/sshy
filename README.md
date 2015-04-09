@@ -1,6 +1,6 @@
 # SSHY
 
-_version 0.0.2_
+_version 0.0.4_
 
 Sshy help you connect to your ssh server without remember every name of it.
 
