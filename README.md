@@ -6,9 +6,7 @@ Sshy help you connect to your ssh server without remember every name of it. It o
 
 ## Prepare
 1. Install iTerm2
-2. Change URL Schemes.
-
-  	Open iTerm2's Preference and click <b>_Profile_</b> tab and then click <b>_General_</b> subtab. Click <b>_Select URL Schemes_</b> and select ssh.
+2. Change URL Schemes.<br>Open iTerm2's Preference and click <b>_Profile_</b> tab and then click <b>_General_</b> subtab. Click <b>_Select URL Schemes_</b> and select ssh.
 
 ## Installation
 
@@ -39,6 +37,7 @@ And now you could select one and press `Enter` to ssh it
 1. show details when press TAB
 2. return error message when ssh failed
 3. auto detect whether os support ssh:// or not
+4. auto search when type
 
 ## Contributing
 
