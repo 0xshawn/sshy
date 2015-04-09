@@ -35,6 +35,11 @@ server05
 ```
 And now you could select one and press `Enter` to ssh it
 
+## TODO
+1. show details when press TAB
+2. return error message when ssh failed
+3. auto detect whether os support ssh:// or not
+
 ## Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/sshy/fork )
