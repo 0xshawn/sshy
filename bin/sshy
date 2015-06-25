@@ -39,7 +39,7 @@ end
 
 def formattd_output(rows)
   table = Terminal::Table.new :rows => rows
-  table.style = {:width => 100, :border_x => " ", :border_i => " ", :border_y => " "}
+  table.style = {:width => 120, :border_x => " ", :border_i => " ", :border_y => " "}
   return table
 end
 

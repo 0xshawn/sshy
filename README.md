@@ -1,6 +1,6 @@
 # SSHY
 
-_version 0.0.4_
+_version 0.0.5_
 
 Sshy help you connect to your ssh server without remember every name of it. It only works on Mac OS X.
 
